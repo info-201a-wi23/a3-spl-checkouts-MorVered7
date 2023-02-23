@@ -1,7 +1,7 @@
 library("dplyr")
 library("ggplot2")
 
-book_checkouts <- read.csv("C:/Users/mvere/OneDrive/Documents/2013-2023-5-Checkouts-SPL.csv", stringsAsFactors = FALSE)
+book_checkouts <- read.csv("2013-2023-5-Checkouts-SPL.csv", stringsAsFactors = FALSE)
 
 
 physical_values <- book_checkouts %>% 
@@ -12,7 +12,7 @@ digital_values <- book_checkouts %>%
   group_by(CheckoutYear) %>% 
   filter(UsageClass == "Digital") %>% 
   summarise(avg_digital = mean(Checkouts)) 
-book_type <- inner_join(physical_values, digital_values, join_by("CheckoutYear"))
+book_type <- left_join(physical_values, digital_values, join_by("CheckoutYear"))
 
 
 ggplot(book_type) +
