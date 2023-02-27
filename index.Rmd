@@ -5,20 +5,14 @@ output: html_document
 
 ### Introduction
 
-An introduction of the data and a description of the trends/books/items you are choosing to analyze (and why!)
+This dataset informs us on book checkouts in the Seattle Public Library from 2013 up to 2022. It gives information on types of books, types of checkouts, authors, dates, publishers, etc. I chose to analyze the trends of physical book checkouts vs digital books over the years, the type of checkout someone did (magazines, music, movie, etc.) and the authors with the most books checked out. I did this because I am really interested in how the pandemic affected book checkouts and what kind of books people are interested in/checking out. I also chose to find the top authors because I am interested to know if I am familiar with any of them or their works, and I also wanted to see what people are reading the most.
 
 ### Summary Information
+```{r, echo = FALSE, message = FALSE, code = readLines("summary.R")}
 
-Write a summary paragraph of findings that includes the 5 values calculated from your summary information R script
+```
 
-These will likely be calculated using your DPLYR skills, answering questions such as:
-
-- What is the average number of checkouts for each item?
-- What is the month or year with the most/least checkouts for a book that you're interested in?
-- What is the month or year with the most/least checkouts for ebooks?
-- How has the number of print book checkouts changed over time?
-
-Feel free to calculate and report values that you find relevant.
+While analyzing the dataset, I found a few interesting values that reflect the trends I noticed. The first trend I found was confirmed by my first chart. The amount of Physical books being checked out has dramatically decreased between 2013 and 2022. In 2013, physical books made up `r perc_phys_2013` of all the books being checked out. However, in 2022 they only made up `r perc_phys_2022` of all books checked out. Considering the pandemic which didn't allow people to leave their house as much as usual, this number makes sense. Another trend that aligns with this fact is the amount of ebooks checked out in recent years. The date with the highest amount of ebook checkouts is `r most_ebook_checkouts`, unsurprisingly this date is in 2022. `r least_ebook_checkouts` is the date with the least amount of ebook checkouts, which is in 2013. This follows previous trends we have seen, since the popularity of digital books has increased over the past ten years. My favorite author, Kate DiCamillo, has a few books featured in the dataset, however her most popular book is `r kate_most`, with a high of `r kate_top` checkouts in a single month.
 
 ### The Dataset
 
@@ -47,42 +41,17 @@ When we say "clear" or "human readable" titles and labels, that means that you s
 
 Here's an example of how to run an R script inside an RMarkdown file:
 
-```{r, echo = FALSE, code = readLines("Chart1.R")}
-ggplot(book_type) +
-  geom_line(mapping = aes(x = CheckoutYear, y = avg_physical, color = "Physical")) +
-  geom_line(mapping = aes(x = CheckoutYear, y = avg_digital, color = "Digital")) +
-  labs(title = "Physical VS Digital Book Checkout Over A Decade", x = "Year", y = "# of Books Checked Out Per Person", color = "Type of Book") + 
-  scale_x_continuous(breaks = seq(2013, 2023, 2))
+```{r, echo = FALSE, message = FALSE, code = readLines("Chart1.R")}
 
   
 ```
 
 ### Second Trends Over Time Chart
 
-Include a chart. Make sure to describe why you included the chart, and what patterns emerged
+I included this chart to show the trends of the type of checkouts over time. By type of checkout, I mean if people checked out books, movies, music, 
 
-The second chart that you will create and include will show another trend over time of your variable/topic/interest. Think carefully about what you want to communicate to your user (you may have to find relevant trends in the dataset first!). Here are some requirements to help guide your design:
+```{r, echo = FALSE, message = FALSE, code = readLines("Chart2.R")}
 
-- Show more than one, but fewer than ~10 trends
-  - For example, two books, or 5 different mediums
-- You must have clear x and y axis labels
-- The chart needs a clear title 
-- You need a legend for your different line colors and a clear - legend title
-In your .Rmd file, make sure to describe why you included the chart, and what patterns emerged
-
-When we say "clear" or "human readable" titles and labels, that means that you should not just display the variable name.
-
-Here's an example of how to run an R script inside an RMarkdown file:
-
-```{r, echo = FALSE, code = readLines("Chart2.R")}
-ggplot(all_checkouts) +
-  geom_line(aes(x = CheckoutYear, y = avg_freegal, color = "Freegal")) +
-  geom_line(aes(x = CheckoutYear, y = avg_hoopla, color = "Hoopla")) +
-  geom_line(aes(x = CheckoutYear, y = avg_horizon, color = "Horizon")) +
-  geom_line(aes(x = CheckoutYear, y = avg_overdrive, color = "Overdrive")) +
-  geom_line(aes(x = CheckoutYear, y = avg_zinio, color = "Zinio")) +
-  labs(title = "Types of Checkout Over A Decade", x = "Year", y = "Verage # of Books Checked Out Per System", color = "Type of System") + 
-  scale_x_continuous(breaks = seq(2013, 2023, 2))
 ```
 
 ### Your Choice
@@ -95,10 +64,6 @@ The last chart is up to you. It could be a line plot, scatter plot, histogram, b
 
 Here's an example of how to run an R script inside an RMarkdown file:
 
-```{r, echo = FALSE, code = readLines("Chart3.R")}
+```{r, echo = FALSE, message = FALSE, code = readLines("Chart3.R")}
 
-ggplot(top_5, aes(x = Creator, y = Checkouts, color = Creator, fill = Creator)) +
-  geom_bar(stat = "identity")
 ```
-
-
