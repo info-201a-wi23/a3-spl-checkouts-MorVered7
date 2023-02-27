@@ -1,7 +1,6 @@
 library("dplyr")
 
-book_checkouts <- read.csv("2013-2023-5-Checkouts-SPL.csv", stringsAsFactors = FALSE)
-
+book_checkouts <- read.csv("C:/Users/mvere/OneDrive/Documents/2013-2023-5-Checkouts-SPL.csv", stringsAsFactors = FALSE)
 
 most_ebook_checkouts <- book_checkouts %>% 
   mutate("Date" = paste(sep = "-", CheckoutYear, CheckoutMonth, "01")) %>% 

@@ -9,6 +9,77 @@ This dataset informs us on book checkouts in the Seattle Public Library from 201
 
 ### Summary Information
 ```{r, echo = FALSE, message = FALSE, code = readLines("summary.R")}
+most_ebook_checkouts <- book_checkouts %>% 
+  mutate("Date" = paste(sep = "-", CheckoutYear, CheckoutMonth, "01")) %>% 
+  group_by(MaterialType, Date) %>% 
+  filter(MaterialType == "EBOOK") %>% 
+  summarise(most_ebook = max(Checkouts)) %>% 
+  slice(which.max(most_ebook)) %>% 
+  pull(Date)
+
+least_ebook_checkouts <- book_checkouts %>% 
+  mutate("Date" = paste(sep = "-", CheckoutYear, CheckoutMonth, "01")) %>% 
+  group_by(MaterialType, Date) %>% 
+  filter(MaterialType == "EBOOK") %>% 
+  summarise(least_ebook = min(Checkouts)) %>% 
+  slice(which.min(least_ebook)) %>% 
+  pull(Date)
+
+kate_dicamillo <- book_checkouts %>% 
+  filter(Creator == "Kate DiCamillo") %>% 
+  mutate("Date" = paste(sep = "-", CheckoutYear, CheckoutMonth, "01")) %>% 
+  group_by(Date, Title) %>% 
+  summarise(total_checkouts = sum(Checkouts)) %>% 
+  arrange(desc(total_checkouts)) %>% 
+  top_n(1) %>% 
+  pull(Title) 
+
+kate_most<- kate_dicamillo[1]
+
+kate_dicamillo_checkout <- book_checkouts %>% 
+  filter(Creator == "Kate DiCamillo") %>% 
+  mutate("Date" = paste(sep = "-", CheckoutYear, CheckoutMonth, "01")) %>% 
+  group_by(Date, Title) %>% 
+  summarise(total_checkouts = sum(Checkouts)) %>% 
+  arrange(desc(total_checkouts)) %>% 
+  top_n(1) %>% 
+  pull(total_checkouts) 
+
+kate_top <- kate_dicamillo_checkout[1]
+
+print_books_2013 <- book_checkouts %>% 
+  group_by(UsageClass) %>% 
+  filter(CheckoutYear == "2013") %>% 
+  filter(UsageClass == "Physical") %>% 
+  summarise(phys_2013 = sum(Checkouts)) %>% 
+  pull(phys_2013)
+
+dig_books_2013 <- book_checkouts %>% 
+  group_by(UsageClass) %>% 
+  filter(CheckoutYear == "2013") %>% 
+  filter(UsageClass == "Digital") %>% 
+  summarise(dig_2013 = sum(Checkouts)) %>% 
+  pull(dig_2013)
+
+perc_phys_2013 <- (print_books_2013 / (dig_books_2013 + print_books_2013)) * 100
+
+print_books_2022 <- book_checkouts %>% 
+  group_by(UsageClass) %>% 
+  filter(CheckoutYear == "2022") %>% 
+  filter(UsageClass == "Physical") %>% 
+  summarise(phys_2022 = sum(Checkouts)) %>% 
+  pull(phys_2022)
+
+dig_books_2022 <- book_checkouts %>% 
+  group_by(UsageClass) %>% 
+  filter(CheckoutYear == "2022") %>% 
+  filter(UsageClass == "Digital") %>% 
+  summarise(dig_2022 = sum(Checkouts)) %>% 
+  pull(dig_2022)
+
+perc_phys_2022 <- (print_books_2022 / (dig_books_2022 + print_books_2022)) * 100
+
+diff_physical <- print_books_2013 - print_books_2022
 
 ```
 
@@ -43,6 +114,23 @@ Here's an example of how to run an R script inside an RMarkdown file:
 
 ```{r, echo = FALSE, message = FALSE, code = readLines("Chart1.R")}
 
+physical_values <- book_checkouts %>% 
+  group_by(CheckoutYear) %>% 
+  filter(UsageClass == "Physical") %>% 
+  summarise(avg_physical = mean(Checkouts))
+digital_values <- book_checkouts %>% 
+  group_by(CheckoutYear) %>% 
+  filter(UsageClass == "Digital") %>% 
+  summarise(avg_digital = mean(Checkouts)) 
+book_type <- left_join(physical_values, digital_values, join_by("CheckoutYear"))
+
+
+ggplot(book_type) +
+  geom_line(mapping = aes(x = CheckoutYear, y = avg_physical, color = "Physical")) +
+  geom_line(mapping = aes(x = CheckoutYear, y = avg_digital, color = "Digital")) +
+  labs(title = "Physical VS Digital Book Checkout Over A Decade", x = "Year", y = "# of Books Checked Out Per Person", color = "Type of Book") + 
+  scale_x_continuous(breaks = seq(2013, 2023, 2))
+  
   
 ```
 
@@ -51,6 +139,51 @@ Here's an example of how to run an R script inside an RMarkdown file:
 I included this chart to show the trends of the type of checkouts over time. By type of checkout, I mean if people checked out books, movies, music, 
 
 ```{r, echo = FALSE, message = FALSE, code = readLines("Chart2.R")}
+freegal_checkouts <- book_checkouts %>% 
+  group_by(CheckoutYear, CheckoutType) %>% 
+  summarise(avg_freegal = mean(Checkouts)) %>% 
+  filter(CheckoutType == "Freegal") %>% 
+  select(CheckoutYear, avg_freegal)
+
+hoopla_checkouts <- book_checkouts %>% 
+  group_by(CheckoutYear, CheckoutType) %>% 
+  summarise(avg_hoopla = mean(Checkouts)) %>% 
+  filter(CheckoutType == "Hoopla") %>% 
+  select(CheckoutYear, avg_hoopla)
+
+horizon_checkouts <- book_checkouts %>% 
+  group_by(CheckoutYear, CheckoutType) %>% 
+  summarise(avg_horizon = mean(Checkouts)) %>% 
+  filter(CheckoutType == "Horizon") %>% 
+  select(CheckoutYear, avg_horizon)
+
+overdrive_checkouts <- book_checkouts %>% 
+  group_by(CheckoutYear, CheckoutType) %>% 
+  summarise(avg_overdrive = mean(Checkouts)) %>% 
+  filter(CheckoutType == "OverDrive") %>% 
+  select(CheckoutYear, avg_overdrive)
+
+zinio_checkouts <- book_checkouts %>% 
+  group_by(CheckoutYear,CheckoutType) %>% 
+  summarise(avg_zinio = mean(Checkouts)) %>% 
+  filter(CheckoutType == "Zinio") %>% 
+  select(CheckoutYear, avg_zinio)
+
+all_checkouts <- freegal_checkouts %>% 
+  left_join(hoopla_checkouts, by = "CheckoutYear") %>% 
+  left_join(horizon_checkouts, by = "CheckoutYear") %>% 
+  left_join(overdrive_checkouts, by = "CheckoutYear") %>% 
+  left_join(zinio_checkouts, by = "CheckoutYear")
+
+ggplot(all_checkouts) +
+  geom_line(aes(x = CheckoutYear, y = avg_freegal, color = "Freegal")) +
+  geom_line(aes(x = CheckoutYear, y = avg_hoopla, color = "Hoopla")) +
+  geom_line(aes(x = CheckoutYear, y = avg_horizon, color = "Horizon")) +
+  geom_line(aes(x = CheckoutYear, y = avg_overdrive, color = "Overdrive")) +
+  geom_line(aes(x = CheckoutYear, y = avg_zinio, color = "Zinio")) +
+  labs(title = "Types of Checkout Over A Decade", x = "Year", y = "Average # of Books Checked Out Per System", color = "Type of System") + 
+  scale_x_continuous(breaks = seq(2013, 2023, 2))
+
 
 ```
 
@@ -65,5 +198,16 @@ The last chart is up to you. It could be a line plot, scatter plot, histogram, b
 Here's an example of how to run an R script inside an RMarkdown file:
 
 ```{r, echo = FALSE, message = FALSE, code = readLines("Chart3.R")}
+
+most_common <- book_checkouts %>% 
+  group_by(Publisher, Creator) %>% 
+  filter(Creator != "") %>% 
+  summarise(Checkouts = sum(Checkouts)) %>% 
+  arrange(desc(Checkouts))
+
+top_5 <- head(most_common, 5)
+
+ggplot(top_5, aes(x = Creator, y = Checkouts, color = Creator, fill = Creator)) +
+  geom_bar(stat = "identity")
 
 ```

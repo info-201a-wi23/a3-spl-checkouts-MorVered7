@@ -1,7 +1,7 @@
 library("dplyr")
 library("ggplot2")
 
-book_checkouts <- read.csv("2013-2023-5-Checkouts-SPL.csv", stringsAsFactors = FALSE)
+book_checkouts <- read.csv("C:/Users/mvere/OneDrive/Documents/2013-2023-5-Checkouts-SPL.csv", stringsAsFactors = FALSE)
 
 
 physical_values <- book_checkouts %>% 
