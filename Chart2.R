@@ -38,11 +38,10 @@ all_checkouts <- freegal_checkouts %>%
   left_join(zinio_checkouts, by = "CheckoutYear")
 
 ggplot(all_checkouts) +
-  geom_line(aes(x = CheckoutYear, y = avg_freegal, color = "Freegal")) +
-  geom_line(aes(x = CheckoutYear, y = avg_hoopla, color = "Hoopla")) +
-  geom_line(aes(x = CheckoutYear, y = avg_horizon, color = "Horizon")) +
-  geom_line(aes(x = CheckoutYear, y = avg_overdrive, color = "Overdrive")) +
-  geom_line(aes(x = CheckoutYear, y = avg_zinio, color = "Zinio")) +
-  labs(title = "Types of Checkout Over A Decade", x = "Year", y = "Average # of Books Checked Out Per System", color = "Type of System") + 
+  geom_line(aes(x = CheckoutYear, y = avg_freegal, color = "Freegal (Music)")) +
+  geom_line(aes(x = CheckoutYear, y = avg_hoopla, color = "Hoopla (Movies and TV)")) +
+  geom_line(aes(x = CheckoutYear, y = avg_horizon, color = "Horizon (Physical Books)")) +
+  geom_line(aes(x = CheckoutYear, y = avg_overdrive, color = "Overdrive (E-Books)")) +
+  geom_line(aes(x = CheckoutYear, y = avg_zinio, color = "Zinio (Magazines and Newspapers)")) +
+  labs(title = "Types of Checkout Over A Decade", x = "Year", y = "Average # of Things Checked Out Per Person", color = "Type of Checkout") + 
   scale_x_continuous(breaks = seq(2013, 2023, 2))
-

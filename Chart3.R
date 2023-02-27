@@ -11,4 +11,5 @@ most_common <- book_checkouts %>%
 top_5 <- head(most_common, 5)
 
 ggplot(top_5, aes(x = Creator, y = Checkouts, color = Creator, fill = Creator)) +
-  geom_bar(stat = "identity")
+  geom_bar(stat = "identity")+
+  labs(title = "Top Authors by Number of Checkouts")

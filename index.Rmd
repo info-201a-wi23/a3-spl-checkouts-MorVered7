@@ -95,22 +95,9 @@ While analyzing the dataset, I found a few interesting values that reflect the t
 - What are possible limitations or problems with this data?   (at least 200 words)
 
 
-### First Trends Over Time Chart
+### Physcial VS Digital Book Checkouts
 
-Include a chart. Make sure to describe why you included the chart, and what patterns emerged
-
-The first chart that you will create and include will show the trend over time of your variable/topic/interest. Think carefully about what you want to communicate to your user (you may have to find relevant trends in the dataset first!). Here are some requirements to help guide your design:
-
-- Show more than one, but fewer than ~10 trends
-  - For example, two books, or 5 different mediums
-- You must have clear x and y axis labels
-- The chart needs a clear title 
-- You need a legend for your different line colors and a clear - legend title
-In your .Rmd file, make sure to describe why you included the chart, and what patterns emerged
-
-When we say "clear" or "human readable" titles and labels, that means that you should not just display the variable name.
-
-Here's an example of how to run an R script inside an RMarkdown file:
+For my first trends over time chart, I decided to analyze checkouts of physical versus digital books over 2013-2023. I chose to analyze these variables because I knew the trend that would occur would be very interesting. I knew that the recent pandemic and technology becoming more accessible over the past decade will influence what kinds of books people are checking out. My suspicions turned out to be true because there is a very clear trend in both the digital and physical books being checked out. Physical books are being checked out less and less over time, while the opposite is happening to digital books.
 
 ```{r, echo = FALSE, message = FALSE, code = readLines("Chart1.R")}
 
@@ -134,9 +121,9 @@ ggplot(book_type) +
   
 ```
 
-### Second Trends Over Time Chart
+### Types of Checkouts over A Decade
 
-I included this chart to show the trends of the type of checkouts over time. By type of checkout, I mean if people checked out books, movies, music, 
+I included this chart to show the trends of the type of checkouts over time. By type of checkout, it  means if people checked out books, movies, music, etc. Each checkout corresponds to what that person checked out, as labeled in the legend below. I chose to analyze this because I wanted to see what people like to check out of the library, and how peoples interests change over time. While most types of checkouts stayed in a steady trendline, Music seemed to decrease by quite a bit, which is explained by the introduction of iPhones and apps such as Spotify and Apple Music. A big trend I noticed was Zinio, which is how people can checkout Magazines and Newspapers online. It is the only trend actively increasing and it also started out very high. This could be explained because people mostly read on their digital devices, and this trend has only been increasing since 2013. 
 
 ```{r, echo = FALSE, message = FALSE, code = readLines("Chart2.R")}
 freegal_checkouts <- book_checkouts %>% 
@@ -176,26 +163,20 @@ all_checkouts <- freegal_checkouts %>%
   left_join(zinio_checkouts, by = "CheckoutYear")
 
 ggplot(all_checkouts) +
-  geom_line(aes(x = CheckoutYear, y = avg_freegal, color = "Freegal")) +
-  geom_line(aes(x = CheckoutYear, y = avg_hoopla, color = "Hoopla")) +
-  geom_line(aes(x = CheckoutYear, y = avg_horizon, color = "Horizon")) +
-  geom_line(aes(x = CheckoutYear, y = avg_overdrive, color = "Overdrive")) +
-  geom_line(aes(x = CheckoutYear, y = avg_zinio, color = "Zinio")) +
-  labs(title = "Types of Checkout Over A Decade", x = "Year", y = "Average # of Books Checked Out Per System", color = "Type of System") + 
+  geom_line(aes(x = CheckoutYear, y = avg_freegal, color = "Freegal (Music)")) +
+  geom_line(aes(x = CheckoutYear, y = avg_hoopla, color = "Hoopla (Movies and TV)")) +
+  geom_line(aes(x = CheckoutYear, y = avg_horizon, color = "Horizon (Physical Books)")) +
+  geom_line(aes(x = CheckoutYear, y = avg_overdrive, color = "Overdrive (E-Books)")) +
+  geom_line(aes(x = CheckoutYear, y = avg_zinio, color = "Zinio (Magazines and Newspapers)")) +
+  labs(title = "Types of Checkout Over A Decade", x = "Year", y = "Average # of Things Checked Out Per Person", color = "Type of Checkout") + 
   scale_x_continuous(breaks = seq(2013, 2023, 2))
 
 
 ```
 
-### Your Choice
+### Top Authors by Number of Checkouts
 
-The last chart is up to you. It could be a line plot, scatter plot, histogram, bar plot, stacked bar plot, and more. Here are some requirements to help guide your design:
-
-- You must have clear x and y axis labels
-- The chart needs a clear title 
-- You need a legend for your different line colors and a clear legend title
-
-Here's an example of how to run an R script inside an RMarkdown file:
+For the last chart, I wanted to look at what authors are the most popular and I measured that by looking at their overall checkouts. I specifically wanted to know about authors, not the publishing company, and I wanted to make sure the author was a single person and had their name updated in the data set that I used. I wanted to know if I was familiar with any of the most popular authors among Seattles Public Libraries. I found that the most popular author was Mo Willems, the author of many well known childrens books. The next most famous author is Jim Davis, who is the creator of Garfield. I found an interesting trend among the top 5 authors. They were all children's books authors, which may give a huge clue as to who is checking out the most books from Seattle Public Libraries.
 
 ```{r, echo = FALSE, message = FALSE, code = readLines("Chart3.R")}
 
@@ -208,6 +189,7 @@ most_common <- book_checkouts %>%
 top_5 <- head(most_common, 5)
 
 ggplot(top_5, aes(x = Creator, y = Checkouts, color = Creator, fill = Creator)) +
-  geom_bar(stat = "identity")
+  geom_bar(stat = "identity")+
+  labs(title = "Top Authors by Number of Checkouts")
 
 ```
