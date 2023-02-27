@@ -43,6 +43,6 @@ ggplot(all_checkouts) +
   geom_line(aes(x = CheckoutYear, y = avg_horizon, color = "Horizon")) +
   geom_line(aes(x = CheckoutYear, y = avg_overdrive, color = "Overdrive")) +
   geom_line(aes(x = CheckoutYear, y = avg_zinio, color = "Zinio")) +
-  labs(title = "Types of Checkout Over A Decade", x = "Year", y = "Verage # of Books Checked Out Per System", color = "Type of System") + 
+  labs(title = "Types of Checkout Over A Decade", x = "Year", y = "Average # of Books Checked Out Per System", color = "Type of System") + 
   scale_x_continuous(breaks = seq(2013, 2023, 2))
 
