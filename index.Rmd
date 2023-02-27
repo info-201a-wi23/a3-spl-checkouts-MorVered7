@@ -9,90 +9,14 @@ This dataset informs us on book checkouts in the Seattle Public Library from 201
 
 ### Summary Information
 ```{r, echo = FALSE, message = FALSE, code = readLines("summary.R")}
-most_ebook_checkouts <- book_checkouts %>% 
-  mutate("Date" = paste(sep = "-", CheckoutYear, CheckoutMonth, "01")) %>% 
-  group_by(MaterialType, Date) %>% 
-  filter(MaterialType == "EBOOK") %>% 
-  summarise(most_ebook = max(Checkouts)) %>% 
-  slice(which.max(most_ebook)) %>% 
-  pull(Date)
-
-least_ebook_checkouts <- book_checkouts %>% 
-  mutate("Date" = paste(sep = "-", CheckoutYear, CheckoutMonth, "01")) %>% 
-  group_by(MaterialType, Date) %>% 
-  filter(MaterialType == "EBOOK") %>% 
-  summarise(least_ebook = min(Checkouts)) %>% 
-  slice(which.min(least_ebook)) %>% 
-  pull(Date)
-
-kate_dicamillo <- book_checkouts %>% 
-  filter(Creator == "Kate DiCamillo") %>% 
-  mutate("Date" = paste(sep = "-", CheckoutYear, CheckoutMonth, "01")) %>% 
-  group_by(Date, Title) %>% 
-  summarise(total_checkouts = sum(Checkouts)) %>% 
-  arrange(desc(total_checkouts)) %>% 
-  top_n(1) %>% 
-  pull(Title) 
-
-kate_most<- kate_dicamillo[1]
-
-kate_dicamillo_checkout <- book_checkouts %>% 
-  filter(Creator == "Kate DiCamillo") %>% 
-  mutate("Date" = paste(sep = "-", CheckoutYear, CheckoutMonth, "01")) %>% 
-  group_by(Date, Title) %>% 
-  summarise(total_checkouts = sum(Checkouts)) %>% 
-  arrange(desc(total_checkouts)) %>% 
-  top_n(1) %>% 
-  pull(total_checkouts) 
-
-kate_top <- kate_dicamillo_checkout[1]
-
-print_books_2013 <- book_checkouts %>% 
-  group_by(UsageClass) %>% 
-  filter(CheckoutYear == "2013") %>% 
-  filter(UsageClass == "Physical") %>% 
-  summarise(phys_2013 = sum(Checkouts)) %>% 
-  pull(phys_2013)
-
-dig_books_2013 <- book_checkouts %>% 
-  group_by(UsageClass) %>% 
-  filter(CheckoutYear == "2013") %>% 
-  filter(UsageClass == "Digital") %>% 
-  summarise(dig_2013 = sum(Checkouts)) %>% 
-  pull(dig_2013)
-
-perc_phys_2013 <- (print_books_2013 / (dig_books_2013 + print_books_2013)) * 100
-
-print_books_2022 <- book_checkouts %>% 
-  group_by(UsageClass) %>% 
-  filter(CheckoutYear == "2022") %>% 
-  filter(UsageClass == "Physical") %>% 
-  summarise(phys_2022 = sum(Checkouts)) %>% 
-  pull(phys_2022)
-
-dig_books_2022 <- book_checkouts %>% 
-  group_by(UsageClass) %>% 
-  filter(CheckoutYear == "2022") %>% 
-  filter(UsageClass == "Digital") %>% 
-  summarise(dig_2022 = sum(Checkouts)) %>% 
-  pull(dig_2022)
-
-perc_phys_2022 <- (print_books_2022 / (dig_books_2022 + print_books_2022)) * 100
-
-diff_physical <- print_books_2013 - print_books_2022
 
 ```
 
-While analyzing the dataset, I found a few interesting values that reflect the trends I noticed. The first trend I found was confirmed by my first chart. The amount of Physical books being checked out has dramatically decreased between 2013 and 2022. In 2013, physical books made up `r perc_phys_2013` of all the books being checked out. However, in 2022 they only made up `r perc_phys_2022` of all books checked out. Considering the pandemic which didn't allow people to leave their house as much as usual, this number makes sense. Another trend that aligns with this fact is the amount of ebooks checked out in recent years. The date with the highest amount of ebook checkouts is `r most_ebook_checkouts`, unsurprisingly this date is in 2022. `r least_ebook_checkouts` is the date with the least amount of ebook checkouts, which is in 2013. This follows previous trends we have seen, since the popularity of digital books has increased over the past ten years. My favorite author, Kate DiCamillo, has a few books featured in the dataset, however her most popular book is `r kate_most`, with a high of `r kate_top` checkouts in a single month.
+While analyzing the data, I found a few interesting values that reflect the trends I noticed. The first trend I found was confirmed by my first chart. The amount of Physical books being checked out has dramatically decreased between 2013 and 2022. In 2013, physical books made up `r perc_phys_2013` of all the books being checked out. However, in 2022 they only made up `r perc_phys_2022` of all books checked out. Considering the pandemic which didn't allow people to leave their house as much as usual, this number makes sense. Another trend that aligns with this fact is the amount of ebooks checked out in recent years. The date with the highest amount of ebook checkouts is `r most_ebook_checkouts`, unsurprisingly this date is in 2022. `r least_ebook_checkouts` is the date with the least amount of ebook checkouts, which is in 2013. This follows previous trends we have seen, since the popularity of digital books has increased over the past ten years. My favorite author, Kate DiCamillo, has a few books featured in the dataset, however her most popular book is `r kate_most`, with a high of `r kate_top` checkouts in a single month.
 
 ### The Dataset
 
-- Who collected/published the data?  
-- What are the parameters of the data (dates, number of checkouts, kinds of books, etc.)?
-- How was the data collected or generated?  
-- Why was the data collected?  
-- What, if any, ethical questions do you need to consider when working with this data?  
-- What are possible limitations or problems with this data?   (at least 200 words)
+This data was provided by the Seattle Public Library, and was published onto the Seattle Open Data Portal. It is frequently updated, with the latest update being on February 6, 2023. The parameters of this data include usage class(physical or digital), the checkout type(music, movies, books, etc), the material type (ebook, audiobook, etc), the year and month the item was checked out, how many items were checked out, the title of the item, the ISBN, the subject, the publisher, and the year of publication. The data was collected by putting together data from the various online checkout sources (Freegal, Horizon, Overdrive, etc.) and also includes data from historical sources. The data was collected to keep a good record of checkouts from the Seattle Public Library. Some ethical questions we may need to consider when working with this data is what locations the data is coming from, meaning are there any locations that are being blacklisted or do any locations have limited supply when compared to other library locations. Possible limitations with this data could be that the exact date of checkout isn't given, only the month and the year. Another big limitation is the location that the item was checked out from isn't included. A problem that the data has is that some titles or creator names are not included, so they cannot be properly analyzed.
 
 
 ### Physcial VS Digital Book Checkouts
@@ -101,22 +25,6 @@ For my first trends over time chart, I decided to analyze checkouts of physical 
 
 ```{r, echo = FALSE, message = FALSE, code = readLines("Chart1.R")}
 
-physical_values <- book_checkouts %>% 
-  group_by(CheckoutYear) %>% 
-  filter(UsageClass == "Physical") %>% 
-  summarise(avg_physical = mean(Checkouts))
-digital_values <- book_checkouts %>% 
-  group_by(CheckoutYear) %>% 
-  filter(UsageClass == "Digital") %>% 
-  summarise(avg_digital = mean(Checkouts)) 
-book_type <- left_join(physical_values, digital_values, join_by("CheckoutYear"))
-
-
-ggplot(book_type) +
-  geom_line(mapping = aes(x = CheckoutYear, y = avg_physical, color = "Physical")) +
-  geom_line(mapping = aes(x = CheckoutYear, y = avg_digital, color = "Digital")) +
-  labs(title = "Physical VS Digital Book Checkout Over A Decade", x = "Year", y = "# of Books Checked Out Per Person", color = "Type of Book") + 
-  scale_x_continuous(breaks = seq(2013, 2023, 2))
   
   
 ```
@@ -126,50 +34,7 @@ ggplot(book_type) +
 I included this chart to show the trends of the type of checkouts over time. By type of checkout, it  means if people checked out books, movies, music, etc. Each checkout corresponds to what that person checked out, as labeled in the legend below. I chose to analyze this because I wanted to see what people like to check out of the library, and how peoples interests change over time. While most types of checkouts stayed in a steady trendline, Music seemed to decrease by quite a bit, which is explained by the introduction of iPhones and apps such as Spotify and Apple Music. A big trend I noticed was Zinio, which is how people can checkout Magazines and Newspapers online. It is the only trend actively increasing and it also started out very high. This could be explained because people mostly read on their digital devices, and this trend has only been increasing since 2013. 
 
 ```{r, echo = FALSE, message = FALSE, code = readLines("Chart2.R")}
-freegal_checkouts <- book_checkouts %>% 
-  group_by(CheckoutYear, CheckoutType) %>% 
-  summarise(avg_freegal = mean(Checkouts)) %>% 
-  filter(CheckoutType == "Freegal") %>% 
-  select(CheckoutYear, avg_freegal)
 
-hoopla_checkouts <- book_checkouts %>% 
-  group_by(CheckoutYear, CheckoutType) %>% 
-  summarise(avg_hoopla = mean(Checkouts)) %>% 
-  filter(CheckoutType == "Hoopla") %>% 
-  select(CheckoutYear, avg_hoopla)
-
-horizon_checkouts <- book_checkouts %>% 
-  group_by(CheckoutYear, CheckoutType) %>% 
-  summarise(avg_horizon = mean(Checkouts)) %>% 
-  filter(CheckoutType == "Horizon") %>% 
-  select(CheckoutYear, avg_horizon)
-
-overdrive_checkouts <- book_checkouts %>% 
-  group_by(CheckoutYear, CheckoutType) %>% 
-  summarise(avg_overdrive = mean(Checkouts)) %>% 
-  filter(CheckoutType == "OverDrive") %>% 
-  select(CheckoutYear, avg_overdrive)
-
-zinio_checkouts <- book_checkouts %>% 
-  group_by(CheckoutYear,CheckoutType) %>% 
-  summarise(avg_zinio = mean(Checkouts)) %>% 
-  filter(CheckoutType == "Zinio") %>% 
-  select(CheckoutYear, avg_zinio)
-
-all_checkouts <- freegal_checkouts %>% 
-  left_join(hoopla_checkouts, by = "CheckoutYear") %>% 
-  left_join(horizon_checkouts, by = "CheckoutYear") %>% 
-  left_join(overdrive_checkouts, by = "CheckoutYear") %>% 
-  left_join(zinio_checkouts, by = "CheckoutYear")
-
-ggplot(all_checkouts) +
-  geom_line(aes(x = CheckoutYear, y = avg_freegal, color = "Freegal (Music)")) +
-  geom_line(aes(x = CheckoutYear, y = avg_hoopla, color = "Hoopla (Movies and TV)")) +
-  geom_line(aes(x = CheckoutYear, y = avg_horizon, color = "Horizon (Physical Books)")) +
-  geom_line(aes(x = CheckoutYear, y = avg_overdrive, color = "Overdrive (E-Books)")) +
-  geom_line(aes(x = CheckoutYear, y = avg_zinio, color = "Zinio (Magazines and Newspapers)")) +
-  labs(title = "Types of Checkout Over A Decade", x = "Year", y = "Average # of Things Checked Out Per Person", color = "Type of Checkout") + 
-  scale_x_continuous(breaks = seq(2013, 2023, 2))
 
 
 ```
@@ -180,16 +45,6 @@ For the last chart, I wanted to look at what authors are the most popular and I 
 
 ```{r, echo = FALSE, message = FALSE, code = readLines("Chart3.R")}
 
-most_common <- book_checkouts %>% 
-  group_by(Publisher, Creator) %>% 
-  filter(Creator != "") %>% 
-  summarise(Checkouts = sum(Checkouts)) %>% 
-  arrange(desc(Checkouts))
 
-top_5 <- head(most_common, 5)
-
-ggplot(top_5, aes(x = Creator, y = Checkouts, color = Creator, fill = Creator)) +
-  geom_bar(stat = "identity")+
-  labs(title = "Top Authors by Number of Checkouts")
 
 ```
